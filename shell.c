@@ -18,15 +18,14 @@
 int main(int ac, char *av[], char *env[])
 {
 	int status, read;
-	size_t line;
-	char *stream, *token;
+	size_t line = 0;
+	char *stream = NULL, *token;
 	char *argv[] = {NULL, NULL};
 	struct stat st;
 	pid_t pid;
 	(void)ac, (void)av;
 
 	do {
-		stream = NULL, line = 0;
 		printf("#cisfun$ ");
 		read = getline(&stream, &line, stdin);
 		if (read == -1)
@@ -50,6 +49,7 @@ int main(int ac, char *av[], char *env[])
 				execve(argv[0], argv, env);
 				exit(EXIT_FAILURE);
 			}
+			free(stream), stream = NULL;
 			wait(&status);
 		}
 	} while (stream);
