@@ -15,25 +15,26 @@
   *
   * Return: Always 0.
   */
-int main(int ac, char *av[], char **env)
+int main(int ac, char *av[], char *env[])
 {
 	int status, read;
-	size_t line = 0;
-	char *stream = NULL, *token;
+	size_t line;
+	char *stream, *token;
 	char *argv[] = {NULL, NULL};
+	char *newenv[] = {NULL};
 	struct stat st;
 	pid_t pid;
-	(void)ac;
+	(void)ac, (void)env;
 
 	do {
+		stream = NULL, line = 0;
 		read = getline(&stream, &line, stdin);
 		if (read == -1)
-			exit(EXIT_FAILURE);
+			return (1);
 
 		token = strtok(stream, "'\n'");
-		free(stream);
 		if (token == NULL)
-			exit(EXIT_FAILURE);
+			return (1);
 		if (stat(token, &st) == -1)
 		{
 			printf("%s: 1: %s: not found\n", av[0], token);
@@ -43,13 +44,13 @@ int main(int ac, char *av[], char **env)
 			argv[0] = token;
 			pid = fork();
 			if (pid == -1)
-				exit(EXIT_FAILURE);
-			free(stream);
+				return (1);
 			if (pid == 0)
 			{
-				execve(argv[0], argv, env);
-				exit(EXIT_FAILURE);
+				execve(argv[0], argv, newenv);
+				return (1);
 			}
+			free(stream);
 			wait(&status);
 		}
 	} while (1);
