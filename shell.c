@@ -23,7 +23,7 @@ int main(int ac, char *av[], char *env[])
 	char *argv[] = {NULL, NULL};
 	struct stat st;
 	pid_t pid;
-	(void)ac, (void)av;
+	(void)ac;
 
 	do {
 		read = getline(&stream, &line, stdin);
@@ -35,7 +35,7 @@ int main(int ac, char *av[], char *env[])
 			exit(EXIT_FAILURE);
 		if (stat(token, &st) == -1)
 		{
-			printf("./shell: No such file or directory\n");
+			printf("%s: 1: %s: not found\n", av[0], token);
 		}
 		else
 		{
