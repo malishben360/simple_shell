@@ -21,10 +21,9 @@ int main(int ac, char *av[], char *env[])
 	size_t line;
 	char *stream, *token;
 	char *argv[] = {NULL, NULL};
-	char *newenv[] = {NULL};
 	struct stat st;
 	pid_t pid;
-	(void)ac, (void)env;
+	(void)ac;
 
 	do {
 		stream = NULL, line = 0;
@@ -47,7 +46,9 @@ int main(int ac, char *av[], char *env[])
 				return (1);
 			if (pid == 0)
 			{
-				execve(argv[0], argv, newenv);
+				free(stream);
+				execve(argv[0], argv, env);
+				free(stream);
 				return (1);
 			}
 			free(stream);
