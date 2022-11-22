@@ -31,6 +31,7 @@ int main(int ac, char *av[], char *env[])
 			exit(EXIT_FAILURE);
 
 		token = strtok(stream, "'\n'");
+		free(stream);
 		if (token == NULL)
 			exit(EXIT_FAILURE);
 		if (stat(token, &st) == -1)
@@ -48,10 +49,9 @@ int main(int ac, char *av[], char *env[])
 				execve(argv[0], argv, env);
 				exit(EXIT_FAILURE);
 			}
-			free(stream);
 			wait(&status);
 		}
-	} while (stream);
+	} while (1);
 
 	exit(EXIT_SUCCESS);
 }
