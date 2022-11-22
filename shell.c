@@ -15,7 +15,7 @@
   *
   * Return: Always 0.
   */
-int main(int ac, char *av[], char *env[])
+int main(int ac, char *av[], char **env)
 {
 	int status, read;
 	size_t line = 0;
@@ -44,6 +44,7 @@ int main(int ac, char *av[], char *env[])
 			pid = fork();
 			if (pid == -1)
 				exit(EXIT_FAILURE);
+			free(stream);
 			if (pid == 0)
 			{
 				execve(argv[0], argv, env);
