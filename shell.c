@@ -46,7 +46,6 @@ int main(int ac, char *av[], char *env[])
 				return (1);
 			if (pid == 0)
 			{
-				free(stream);
 				execve(argv[0], argv, env);
 				free(stream);
 				return (1);
