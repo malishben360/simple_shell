@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
+#include "main.h"
 
 /**
   * main - Simple UNIX command line interpreter
@@ -15,7 +9,7 @@
   *
   * Return: Always 0.
   */
-int main(int ac, char *av[], char *env[])
+int main(int ac, char *av[])
 {
 	int status, read;
 	size_t line;
@@ -29,7 +23,7 @@ int main(int ac, char *av[], char *env[])
 		stream = NULL, line = 0;
 		read = getline(&stream, &line, stdin);
 		if (read == -1)
-			return (1);
+			return (0);
 
 		token = strtok(stream, "'\n'");
 		if (token == NULL)
@@ -46,9 +40,9 @@ int main(int ac, char *av[], char *env[])
 				return (1);
 			if (pid == 0)
 			{
-				execve(argv[0], argv, env);
+				execve(argv[0], argv, environ);
 				free(stream);
-				return (1);
+				return (0);
 			}
 			free(stream);
 			wait(&status);
