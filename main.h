@@ -9,5 +9,6 @@
 #include <sys/wait.h>
 
 extern char **environ;
+int shell_execute(char **args, char **argv, int *exit_status);
 
 #endif /* MAIN_H */

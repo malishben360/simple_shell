@@ -10,23 +10,31 @@
   */
 int main(int ac, char *av[])
 {
-	int status, read;
-	size_t line;
 	char *stream, *token;
 	char *argv[] = {NULL, NULL};
 	struct stat st;
-	pid_t pid;
+	size_t line;
+	ssize_t read;
+	int exit_status = 0, status_return = 1;
 	(void)ac;
 
-	do {
+	while (status_return && read != EOF)
+	{
 		stream = NULL, line = 0;
+		status_return = isatty(STDIN_FILENO);
 		read = getline(&stream, &line, stdin);
 		if (read == -1)
+		{
+			free(stream);
 			break;
+		}
 
 		token = strtok(stream, "'\n'");
 		if (token == NULL)
-			break;
+		{
+			free(stream);
+			continue;
+		}
 		if (stat(token, &st) == -1)
 		{
 			printf("%s: 1: %s: not found\n", av[0], token);
@@ -34,17 +42,10 @@ int main(int ac, char *av[])
 		else
 		{
 			argv[0] = token;
-			pid = fork();
-			if (pid == -1)
-				break;
-			if (pid == 0)
-			{
-				execve(argv[0], argv, environ);
-			}
+			status_return = shell_execute(argv, av, &exit_status);
 			free(stream);
-			wait(&status);
 		}
-	} while (1);
+	}
 
 	return (0);
 }
