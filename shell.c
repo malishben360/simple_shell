@@ -5,7 +5,6 @@
   * entry point
   * @ac: length of argv array
   * @av: array of arguments passed to main
-  * @env: main environment variables
   *
   * Return: Always 0.
   */
@@ -23,11 +22,11 @@ int main(int ac, char *av[])
 		stream = NULL, line = 0;
 		read = getline(&stream, &line, stdin);
 		if (read == -1)
-			return (0);
+			break;
 
 		token = strtok(stream, "'\n'");
 		if (token == NULL)
-			return (1);
+			break;
 		if (stat(token, &st) == -1)
 		{
 			printf("%s: 1: %s: not found\n", av[0], token);
@@ -37,12 +36,10 @@ int main(int ac, char *av[])
 			argv[0] = token;
 			pid = fork();
 			if (pid == -1)
-				return (1);
+				break;
 			if (pid == 0)
 			{
 				execve(argv[0], argv, environ);
-				free(stream);
-				return (0);
 			}
 			free(stream);
 			wait(&status);
